@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Top Crypto Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(-45deg, #1e293b, #4b5563, #2d3748, #1a202c);
+      background-size: 400% 400%;
+      animation: gradient 12s ease infinite;
+      color: #fff;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      overflow-x: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .search {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+      animation: fadeIn 2s ease-in-out 0.5s;
+    }
+
+    .search input {
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      border: 2px solid #3b82f6;
+      background-color: #1f1f2f;
+      color: white;
+      width: 320px;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+      outline: none;
+      box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .search input:focus {
+      border-color: #fbbf24;
+      box-shadow: 0px 0px 15px rgba(251, 191, 36, 0.8);
+    }
+
+    .search button {
+      background-color: #3b82f6;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.5rem;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .search button:hover {
+      background-color: #2563eb;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      animation: fadeIn 2s ease-in-out 1s;
+    }
+
+    .card {
+      background-color: rgba(31, 31, 47, 0.85);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+      transform-origin: center;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.05);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .card h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: #fbbf24;
+      text-decoration: underline;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .card p {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .price {
+      color: #22c55e;
+      font-weight: 600;
+    }
+
+    .card:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .card:hover:before {
+      opacity: 1;
+    }
+
+    .toggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background-color: #1f1f2f;
+      border: 2px solid #fbbf24;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+
+    .toggle:hover {
+      background-color: #2563eb;
+    }
+
+    .chart-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background-color: #1e293b;
+      padding: 1rem;
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .pagination button {
+      background-color: #3b82f6;
+      border: none;
+      padding: 0.5rem 1rem;
+      margin: 0 0.25rem;
+      border-radius: 0.5rem;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .pagination button:hover {
+      background-color: #2563eb;
+    }
+
+    /* Add Particle Effect */
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: rgba(251, 191, 36, 0.8);
+      animation: particleAnim 2s infinite ease-in-out;
+    }
+    @keyframes particleAnim {
+      0% { opacity: 0; transform: translateY(0) scale(1); }
+      50% { opacity: 1; transform: translateY(-50px) scale(1.5); }
+      100% { opacity: 0; transform: translateY(0) scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+  <h1>Top Crypto Tracker</h1>
+  <div class="search">
+    <input type="text" id="search" placeholder="Search cryptocurrency...">
+    <button onclick="filterCoins()">Search</button>
+  </div>
+  <div class="grid" id="crypto-grid"></div>
+  <div class="pagination" id="pagination-container"></div>
+  <div class="chart-container" id="chart-container">
+    <h2>Bitcoin Price Chart</h2>
+    <canvas id="crypto-chart"></canvas>
+  </div>
+
+  <!-- Particle Background Effect -->
+  <div class="particles" id="particles"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    let cryptoData = [];
+    let currentPage = 1;
+    const itemsPerPage = 10;
+    const API_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=';
+    const chartAPI = 'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=7';
+
+    async function fetchCryptoData() {
+      try {
+        const response = await fetch(API_URL + currentPage);
+        const data = await response.json();
+        cryptoData = data.map(coin => ({
+          name: coin.name,
+          symbol: coin.symbol.toUpperCase(),
+          price: `$${coin.current_price.toLocaleString()}`,
+          url: `https://www.binance.com/en/trade/${coin.symbol.toUpperCase()}_USDT`  // Link to Binance for purchasing
+        }));
+        renderCoins(cryptoData);
+        renderPagination();
+        fetchChartData();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    async function fetchChartData() {
+      const response = await fetch(chartAPI);
+      const data = await response.json();
+      renderChart(data.prices);
+    }
+
+    function renderChart(prices) {
+      const ctx = document.getElementById('crypto-chart').getContext('2d');
+      const labels = prices.map(price => new Date(price[0]).toLocaleTimeString());
+      const data = prices.map(price => price[1]);
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Bitcoin Price (7 Days)',
+            data: data,
+            borderColor: '#fbbf24',
+            backgroundColor: 'rgba(251, 191, 36, 0.2)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: false }
+          },
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    }
+
+    function renderCoins(data) {
+      const grid = document.getElementById('crypto-grid');
+      grid.innerHTML = '';
+      data.forEach(coin => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h2 onclick="window.open('${coin.url}', '_blank')">${coin.name} <small>(${coin.symbol})</small></h2>
+          <p>Current Price: <span class="price">${coin.price}</span></p>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderPagination() {
+      const paginationContainer = document.getElementById('pagination-container');
+      paginationContainer.innerHTML = '';
+      const totalPages = Math.ceil(cryptoData.length / itemsPerPage);
+      for (let i = 1; i <= totalPages; i++) {
+        const button = document.createElement('button');
+        button.textContent = i;
+        button.onclick = function() {
+          currentPage = i;
+          fetchCryptoData();
+        };
+        paginationContainer.appendChild(button);
+      }
+    }
+
+    function filterCoins() {
+      const query = document.getElementById('search').value.toLowerCase();
+      const filtered = cryptoData.filter(coin =>
+        coin.name.toLowerCase().includes(query) ||
+        coin.symbol.toLowerCase().includes(query)
+      );
+      renderCoins(filtered);
+    }
+
+    function toggleDarkMode() {
+      const body = document.querySelector('body');
+      body.classList.toggle('dark-mode');
+    }
+
+    // Particle Animation
+    function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 100; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        particle.style.animationDelay = `${Math.random() * 3}s`;
+        container.appendChild(particle);
+      }
+    }
+
+    // Initialize everything
+    createParticles();
+    fetchCryptoData();
+  </script>
+</body>
+</html>
